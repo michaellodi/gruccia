@@ -2,6 +2,10 @@
 
 Applicazione HTML5/JavaScript creata da Michael Lodi con l'aiuto di Codex.
 
+## Descrizione
+
+Trova il più pesante è un gioco e simulatore didattico in cui bisogna individuare il sacchetto più pesante usando una gruccia come bilancia. Si può giocare liberamente trascinando i sacchetti oppure costruire una sequenza di istruzioni nella modalità programmatore.
+
 ## Avvio
 
 Apri `index.html` in un browser moderno. Il progetto non richiede build, dipendenze esterne o installazione di librerie.
@@ -12,10 +16,6 @@ Apri `index.html` in un browser moderno. Il progetto non richiede build, dipende
 - `script.js`: logica della simulazione e del programmatore
 - `styles.css`: grafica e layout
 - `LICENSE`: testo completo della GNU AGPL v3
-
-## Materiali di lavoro
-
-La cartella `descrizione/` contiene materiali di riferimento usati in fase di progettazione. Non è necessaria per eseguire l'app e può restare esclusa dalla distribuzione pubblica.
 
 ## Licenza
 
