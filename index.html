@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+Copyright 2026 Michael Lodi
+
+This file is part of Trova il più pesante.
+
+Trova il più pesante is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Trova il più pesante is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Trova il più pesante. If not, see <https://www.gnu.org/licenses/>.
+-->
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trova il più pesante</title>
+  <meta
+    name="description"
+    content="Gioco e simulatore per trovare il sacchetto più pesante con una gruccia-bilancia."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero-card">
+      <div class="hero-copy">
+        <p class="eyebrow">Strategie di risoluzione di problemi</p>
+        <h1>Trova il più pesante</h1>
+        <p class="hero-text">
+          Usa la gruccia-bilancia per scoprire qual è il sacchetto più pesante. Puoi giocare
+          liberamente oppure costruire un programma con le icone delle istruzioni.
+        </p>
+      </div>
+
+      <div class="hero-controls">
+        <div class="mode-switch" role="tablist" aria-label="Modalità">
+          <button id="freeModeBtn" class="mode-switch__button is-active" type="button" role="tab" aria-selected="true">
+            Gioco libero
+          </button>
+          <button id="programModeBtn" class="mode-switch__button" type="button" role="tab" aria-selected="false">
+            Programmatore
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <label id="bagCountWrap" class="setting-pill is-hidden" for="bagCountSelect">
+            Sacchetti
+            <select id="bagCountSelect">
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6" selected>6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+
+          <label id="speedWrap" class="setting-pill is-hidden" for="speedRange">
+            Velocità
+            <input id="speedRange" type="range" min="1" max="3" step="1" value="2">
+          </label>
+
+          <button id="resetBtn" class="ghost-button" type="button">Nuova sfida</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="workspace" class="workspace workspace--free">
+      <section class="manual-card workspace-card">
+        <div class="manual-head">
+          <div>
+            <p class="panel-kicker">Manuale delle istruzioni</p>
+            <h2>Le uniche azioni possibili</h2>
+          </div>
+          <p id="manualHint" class="manual-hint">
+            Nel gioco libero usa queste azioni come guida.
+          </p>
+        </div>
+        <div id="manualList" class="manual-list"></div>
+      </section>
+
+      <section id="programmerCard" class="programmer-card workspace-card is-hidden">
+        <div class="programmer-head">
+          <div>
+            <p class="panel-kicker">Programmatore</p>
+            <h2>Costruisci la sequenza</h2>
+          </div>
+          <p class="programmer-hint">
+            Trascina le icone nell’area del programma oppure toccali per aggiungerli.
+          </p>
+        </div>
+
+        <div class="program-tips">
+          <span id="stepsHint">Con 6 sacchetti, una soluzione esplicita richiede 22 blocchi.</span>
+        </div>
+
+        <div class="program-stage">
+          <div class="program-stage__head">
+            <h3>Il tuo programma</h3>
+            <div class="program-controls">
+              <button id="runBtn" class="primary-button" type="button">Run</button>
+              <button id="stopBtn" class="ghost-button" type="button" disabled>Ferma</button>
+              <button id="clearBtn" class="ghost-button" type="button">Pulisci</button>
+            </div>
+          </div>
+
+          <div id="programArea" class="program-area" aria-label="Area del programma"></div>
+        </div>
+      </section>
+
+      <section class="workspace-stack">
+        <section class="mission-card workspace-card">
+          <p class="panel-kicker">Missione</p>
+          <h2 id="missionTitle">Gioca con i 4 sacchetti</h2>
+          <p id="missionText">
+            Muovi i sacchetti rispettando le regole del gioco: uno solo in mano, confronti sulla
+            gruccia e poi elimini il più leggero.
+          </p>
+        </section>
+
+        <section class="panel scene-panel" aria-label="Simulatore">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Simulatore</p>
+              <h2>La scena di gioco</h2>
+            </div>
+            <div id="objectiveBadge" class="objective-badge">
+              Alla fine, sulla gruccia deve restare solo il sacchetto più pesante.
+            </div>
+          </div>
+
+          <div id="messageBar" class="message-bar" aria-live="polite">
+            Trascina un sacchetto dalla scatola “da pesare” direttamente sulla gruccia.
+          </div>
+
+          <div class="scene-wrapper">
+            <div id="scene" class="scene">
+              <div class="scene-decor scene-decor--a"></div>
+              <div class="scene-decor scene-decor--b"></div>
+
+              <div id="scaleRig" class="scale-rig">
+                <div class="scale-hook"></div>
+                <div class="scale-string scale-string--center"></div>
+                <div id="scaleBeam" class="scale-beam">
+                  <span id="leftPeg" class="scale-peg scale-peg--left"></span>
+                  <span id="rightPeg" class="scale-peg scale-peg--right"></span>
+                </div>
+                <div id="leftString" class="scale-side-string"></div>
+                <div id="rightString" class="scale-side-string"></div>
+              </div>
+
+              <div id="zoneWeigh" class="drop-zone drop-zone--box drop-zone--weigh" data-zone="weigh">
+                <div class="drop-zone__title">Sacchetti da pesare</div>
+                <div id="weighCount" class="drop-zone__count"></div>
+              </div>
+
+              <div id="zoneHand" class="drop-zone drop-zone--hand" data-zone="hand">
+                <div class="drop-zone__title">In mano</div>
+                <div class="drop-zone__note">Un solo sacchetto alla volta</div>
+              </div>
+
+              <div id="zoneEliminated" class="drop-zone drop-zone--box drop-zone--eliminated" data-zone="eliminated">
+                <div class="drop-zone__title">Sacchetti eliminati</div>
+                <div id="eliminatedCount" class="drop-zone__count"></div>
+              </div>
+
+              <div id="zoneHangerLeft" class="drop-zone drop-zone--hanger drop-zone--hanger-left" data-zone="hanger-left" aria-hidden="true"></div>
+              <div id="zoneHangerRight" class="drop-zone drop-zone--hanger drop-zone--hanger-right" data-zone="hanger-right" aria-hidden="true"></div>
+
+              <div id="bagsLayer" class="bags-layer"></div>
+
+              <div id="successBubble" class="success-bubble is-hidden" aria-live="polite">
+                Hai trovato il più pesante!
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="appFooter">
+      <p>App creata da Michael Lodi con il pesante aiuto di Codex.</p>
+      <p>Licenza: GNU AGPL v3 o successive. Questo programma è fornito senza garanzia.</p>
+      <p>Versione 0.1 del 23 marzo 2026</p>
+      <p class="footerLinks">
+        <a href="./LICENSE">Licenza completa</a>
+        <a href="./index.html">HTML</a>
+        <a href="./script.js">JavaScript</a>
+        <a href="./styles.css">CSS</a>
+        <a href="./README.md">README</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
